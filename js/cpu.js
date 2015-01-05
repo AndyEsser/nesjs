@@ -239,6 +239,51 @@ function CPU (nes) {
 	// SEI
 	opTable[0x78] = function (addr) { me.ExecuteSEI(addr); };
 
+	// STA
+	opTable[0x85] = function (addr) { me.ExecuteSTA(addr); };
+	opTable[0x95] = function (addr) { me.ExecuteSTA(addr); };
+	opTable[0x8D] = function (addr) { me.ExecuteSTA(addr); };
+	opTable[0x9D] = function (addr) { me.ExecuteSTA(addr); };
+	opTable[0x99] = function (addr) { me.ExecuteSTA(addr); };
+	opTable[0x81] = function (addr) { me.ExecuteSTA(addr); };
+	opTable[0x91] = function (addr) { me.ExecuteSTA(addr); };
+
+	// STX
+	opTable[0x86] = function (addr) { me.ExecuteSTX(addr); };
+	opTable[0x96] = function (addr) { me.ExecuteSTX(addr); };
+	opTable[0x8E] = function (addr) { me.ExecuteSTX(addr); };
+
+	// STY
+	opTable[0x84] = function (addr) { me.ExecuteSTY(addr); };
+	opTable[0x94] = function (addr) { me.ExecuteSTY(addr); };
+	opTable[0x8C] = function (addr) { me.ExecuteSTY(addr); };
+
+	// TAX
+	opTable[0xAA] = function (addr) { me.ExecuteTAX(addr); };
+
+	// TAY
+	opTable[0xA8] = function (addr) { me.ExecuteTAY(addr); };
+
+	// TSX
+	opTable[0xBA] = function (addr) { me.ExecuteTSX(addr); };
+
+	// TXA
+	opTable[0x8A] = function (addr) { me.ExecuteTXA(addr); };
+
+	// TXS
+	opTable[0x9a] = function (addr) { me.ExecuteTXS(addr); };
+
+	// TYA
+	opTable[0x98] = function (addr) { me.ExecuteTYA(addr); };
+
+	var insCount = 0;
+	for(var idx = 0; idx < opTable.length; ++idx) {
+		if(opTable[idx] != null || opTable != undefined) {
+			insCount++;
+		}
+	}
+
+	console.log(insCount + " Instructions");
 // ----------------------------------------------------------------
 	function setCarryFlag () {
 		p = p | 1;
