@@ -34,6 +34,8 @@ function NES () {
 		io.Init();
 		rom.Init();
 		cpu.Init();
+
+		cpu.Run();
 	}
 
 	this.Reset = function () {
