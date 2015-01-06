@@ -2,294 +2,21 @@ var RAM 			= require('./ram');
 
 function CPU (nes) {
 // ----------------------------------------------------------------
-	var me = this;
+	var me 			= this;
+	var hz			= 2000;
 	var m_Console 	= nes;	
-	var m_Memory	= new RAM();
+	var m_Memory	= new RAM(nes);
 	var m_Running 	= false;
 	var m_OpSize	= new Array();
 	var m_OpTable 	= new Array();
-	var pc;
-	var sp;
-	var a;
-	var x;
-	var y;
-	var p;
-// ----------------------------------------------------------------
-	// ADC
-	m_OpSize[0x69] = 2;
-	m_OpSize[0x65] = 2;
-	m_OpSize[0x75] = 2;
-	m_OpSize[0x6D] = 2;
-	m_OpSize[0x7D] = 3;
-	m_OpSize[0x79] = 3;
-	m_OpSize[0x61] = 2;
-	m_OpSize[0x71] = 2;
-
-	// AND
-	m_OpSize[0x29] = function (addr) { me.ExecuteAND(addr); return 2; };
-	m_OpSize[0x25] = function (addr) { me.ExecuteAND(addr); return 3; };
-	m_OpSize[0x35] = function (addr) { me.ExecuteAND(addr); return 4; };
-	m_OpSize[0x2D] = function (addr) { me.ExecuteAND(addr); return 4; };
-	m_OpSize[0x3D] = function (addr) { me.ExecuteAND(addr); return 4; };
-	m_OpSize[0x39] = function (addr) { me.ExecuteAND(addr); return 4; };
-	m_OpSize[0x21] = function (addr) { me.ExecuteAND(addr); return 6; };
-	m_OpSize[0x31] = function (addr) { me.ExecuteAND(addr); return 5; };
-
-	// ASL
-	m_OpSize[0x0A] = function (addr) { me.ExecuteASL(addr); return 2; };
-	m_OpSize[0x06] = function (addr) { me.ExecuteASL(addr); return 5; };
-	m_OpSize[0x16] = function (addr) { me.ExecuteASL(addr); return 6; };
-	m_OpSize[0x0E] = function (addr) { me.ExecuteASL(addr); return 6; };
-	m_OpSize[0x1E] = function (addr) { me.ExecuteASL(addr); return 7; };
-	
-	// BCC
-	m_OpSize[0x90] = function (addr) { me.ExecuteBCC(addr); return 2; };
-
-	// BCS
-	m_OpSize[0xB0] = function (addr) { me.ExecuteBCS(addr); return 2; };
-
-	// BEQ
-	m_OpSize[0xF0] = function (addr) { me.ExecuteBEQ(addr); return 2; };
-
-	// BIT
-	m_OpSize[0x24] = function (addr) { me.ExecuteBIT(addr); return 3; };
-	m_OpSize[0x2C] = function (addr) { me.ExecuteBIT(addr); return 4; };
-
-	// BMI
-	m_OpSize[0x30] = function (addr) { me.ExecuteBMI(addr); return 2; };
-
-	// BNE
-	m_OpSize[0xD0] = function (addr) { me.ExecuteBNE(addr); return 2; };
-
-	// BPL
-	m_OpSize[0x10] = function (addr) { me.ExecuteBPL(addr); return 2; };
-
-	// BRK
-	m_OpSize[0x00] = function (addr) { me.ExecuteBRK(addr); return 7; };
-
-	// BVC
-	m_OpSize[0x50] = function (addr) { me.ExecuteBVC(addr); return 2; };
-
-	// BVS
-	m_OpSize[0x70] = function (addr) { me.ExecuteBVS(addr); return 2; };
-
-	// CLC
-	m_OpSize[0x18] = function (addr) { me.ExecuteCLC(addr); return 2; };
-
-	// CLD
-	m_OpSize[0xD8] = function (addr) { me.ExecuteCLD(addr); return 2; };
-
-	// CLI
-	m_OpSize[0x58] = function (addr) { me.ExecuteCLI(addr); return 2; };
-
-	// CLV
-	m_OpSize[0xB8] = function (addr) { me.ExecuteCLV(addr); return 2; };
-
-	// CMP
-	m_OpSize[0xC9] = function (addr) { me.ExecuteCMP(addr); return 2; };
-	m_OpSize[0xC5] = function (addr) { me.ExecuteCMP(addr); return 3; };
-	m_OpSize[0xD5] = function (addr) { me.ExecuteCMP(addr); return 4; };
-	m_OpSize[0xCD] = function (addr) { me.ExecuteCMP(addr); return 4; };
-	m_OpSize[0xDD] = function (addr) { me.ExecuteCMP(addr); return 4; };
-	m_OpSize[0xD9] = function (addr) { me.ExecuteCMP(addr); return 4; };
-	m_OpSize[0xC1] = function (addr) { me.ExecuteCMP(addr); return 6; };
-	m_OpSize[0xD1] = function (addr) { me.ExecuteCMP(addr); return 5; };
-
-	// CPX
-	m_OpSize[0xE0] = function (addr) { me.ExecuteCPX(addr); return 2; };
-	m_OpSize[0xE4] = function (addr) { me.ExecuteCPX(addr); return 3; };
-	m_OpSize[0xEC] = function (addr) { me.ExecuteCPX(addr); return 4; };
-
-	// CPY
-	m_OpSize[0xC0] = function (addr) { me.ExecuteCPY(addr); return 2; };
-	m_OpSize[0xC4] = function (addr) { me.ExecuteCPY(addr); return 3; };
-	m_OpSize[0xCC] = function (addr) { me.ExecuteCPY(addr); return 4; };
-
-	// DEC
-	m_OpSize[0xC6] = function (addr) { me.ExecuteDEC(addr); return 5; };
-	m_OpSize[0xD6] = function (addr) { me.ExecuteDEC(addr); return 6; };
-	m_OpSize[0xCE] = function (addr) { me.ExecuteDEC(addr); return 6; };
-	m_OpSize[0xDE] = function (addr) { me.ExecuteDEC(addr); return 7; };
-
-	// DEX
-	m_OpSize[0xCA] = function (addr) { me.ExecuteDEX(addr); return 2; };
-
-	// DEY
-	m_OpSize[0x88] = function (addr) { me.ExecuteDEY(addr); return 2; };
-
-	// EOR
-	m_OpSize[0x49] = function (addr) { me.ExecuteEOR(addr); return 2; };
-	m_OpSize[0x45] = function (addr) { me.ExecuteEOR(addr); return 3; };
-	m_OpSize[0x55] = function (addr) { me.ExecuteEOR(addr); return 4; };
-	m_OpSize[0x4D] = function (addr) { me.ExecuteEOR(addr); return 4; };
-	m_OpSize[0x5D] = function (addr) { me.ExecuteEOR(addr); return 4; };
-	m_OpSize[0x59] = function (addr) { me.ExecuteEOR(addr); return 4; };
-	m_OpSize[0x41] = function (addr) { me.ExecuteEOR(addr); return 6; };
-	m_OpSize[0x51] = function (addr) { me.ExecuteEOR(addr); return 5; };
-
-	// INC
-	m_OpSize[0xE6] = function (addr) { me.ExecuteINC(addr); return 5; };
-	m_OpSize[0xF6] = function (addr) { me.ExecuteINC(addr); return 6; };
-	m_OpSize[0xEE] = function (addr) { me.ExecuteINC(addr); return 6; };
-	m_OpSize[0xFE] = function (addr) { me.ExecuteINC(addr); return 7; };
-
-	// INX
-	m_OpSize[0xE8] = function (addr) { me.ExecuteINX(addr); return 2; };
-
-	// INY
-	m_OpSize[0xC8] = function (addr) { me.ExecuteINY(addr); return 2; };
-
-	// JMP
-	m_OpSize[0x4C] = function (addr) { me.ExecuteJMP(addr); return 3; };
-	m_OpSize[0x6C] = function (addr) { me.ExecuteJMP(addr); return 5; };
-
-	// JSR
-	m_OpSize[0x20] = function (addr) { me.ExecuteJSR(addr); return 6; };
-
-	// LDA
-	m_OpSize[0xA9] = function (addr) { me.ExecuteLDA(addr); return 2; };
-	m_OpSize[0xA5] = function (addr) { me.ExecuteLDA(addr); return 3; };
-	m_OpSize[0xB5] = function (addr) { me.ExecuteLDA(addr); return 4; };
-	m_OpSize[0xAD] = function (addr) { me.ExecuteLDA(addr); return 4; };
-	m_OpSize[0xBD] = function (addr) { me.ExecuteLDA(addr); return 4; };
-	m_OpSize[0xB9] = function (addr) { me.ExecuteLDA(addr); return 4; };
-	m_OpSize[0xA1] = function (addr) { me.ExecuteLDA(addr); return 6; };
-	m_OpSize[0xB1] = function (addr) { me.ExecuteLDA(addr); return 5; };
-
-	// LDX
-	m_OpSize[0xA2] = function (addr) { me.ExecuteLDX(addr); return 2; };
-	m_OpSize[0xA6] = function (addr) { me.ExecuteLDX(addr); return 3; };
-	m_OpSize[0xB6] = function (addr) { me.ExecuteLDX(addr); return 4; };
-	m_OpSize[0xAE] = function (addr) { me.ExecuteLDX(addr); return 4; };
-	m_OpSize[0xBE] = function (addr) { me.ExecuteLDX(addr); return 4; };
-
-	// LDY
-	m_OpSize[0xA0] = function (addr) { me.ExecuteLDY(addr); return 2; };
-	m_OpSize[0xA4] = function (addr) { me.ExecuteLDY(addr); return 3; };
-	m_OpSize[0xB4] = function (addr) { me.ExecuteLDY(addr); return 4; };
-	m_OpSize[0xAC] = function (addr) { me.ExecuteLDY(addr); return 4; };
-	m_OpSize[0xBC] = function (addr) { me.ExecuteLDY(addr); return 4; };
-
-	// LSR
-	m_OpSize[0x4A] = function (addr) { me.ExecuteLSR(addr); return 2; };
-	m_OpSize[0x46] = function (addr) { me.ExecuteLSR(addr); return 5; };
-	m_OpSize[0x56] = function (addr) { me.ExecuteLSR(addr); return 6; };
-	m_OpSize[0x4E] = function (addr) { me.ExecuteLSR(addr); return 6; };
-	m_OpSize[0x5E] = function (addr) { me.ExecuteLSR(addr); return 7; };
-
-	// NOP
-	m_OpSize[0xEA] = function (addr) { me.ExecuteNOP(addr); return 2; };
-
-	// ORA
-	m_OpSize[0x09] = function (addr) { me.ExecuteORA(addr); return 2; };
-	m_OpSize[0x05] = function (addr) { me.ExecuteORA(addr); return 3; };
-	m_OpSize[0x15] = function (addr) { me.ExecuteORA(addr); return 4; };
-	m_OpSize[0x0D] = function (addr) { me.ExecuteORA(addr); return 4; };
-	m_OpSize[0x1D] = function (addr) { me.ExecuteORA(addr); return 4; };
-	m_OpSize[0x19] = function (addr) { me.ExecuteORA(addr); return 4; };
-	m_OpSize[0x01] = function (addr) { me.ExecuteORA(addr); return 6; };
-	m_OpSize[0x11] = function (addr) { me.ExecuteORA(addr); return 5; };
-
-	// PHA
-	m_OpSize[0x48] = function (addr) { me.ExecutePHA(addr); return 3; };
-
-	// PHP
-	m_OpSize[0x08] = function (addr) { me.ExecutePHP(addr); return 3; };
-
-	// PLA
-	m_OpSize[0x68] = function (addr) { me.ExecutePLA(addr); return 4; };
-
-	// PLP
-	m_OpSize[0x28] = function (addr) { me.ExecutePLP(addr); return 4; };
-
-	// ROL
-	m_OpSize[0x2A] = function (addr) { me.ExecuteROL(addr); return 2; };
-	m_OpSize[0x26] = function (addr) { me.ExecuteROL(addr); return 5; };
-	m_OpSize[0x36] = function (addr) { me.ExecuteROL(addr); return 6; };
-	m_OpSize[0x2E] = function (addr) { me.ExecuteROL(addr); return 6; };
-	m_OpSize[0x3E] = function (addr) { me.ExecuteROL(addr); return 7; };
-
-	// ROR
-	m_OpSize[0x6A] = function (addr) { me.ExecuteROR(addr); return 2; };
-	m_OpSize[0x66] = function (addr) { me.ExecuteROR(addr); return 5; };
-	m_OpSize[0x76] = function (addr) { me.ExecuteROR(addr); return 6; };
-	m_OpSize[0x6E] = function (addr) { me.ExecuteROR(addr); return 6; };
-	m_OpSize[0x7E] = function (addr) { me.ExecuteROR(addr); return 7; };
-
-	// RTI
-	m_OpSize[0x40] = function (addr) { me.ExecuteRTI(addr); return 6; };
-
-	// RTS
-	m_OpSize[0x60] = function (addr) { me.ExecutePTS(addr); return 6; };
-
-	// SBC
-	m_OpSize[0xE9] = function (addr) { me.ExecuteSBC(addr); return 2; };
-	m_OpSize[0xE5] = function (addr) { me.ExecuteSBC(addr); return 3; };
-	m_OpSize[0xF5] = function (addr) { me.ExecuteSBC(addr); return 4; };
-	m_OpSize[0xED] = function (addr) { me.ExecuteSBC(addr); return 4; };
-	m_OpSize[0xFD] = function (addr) { me.ExecuteSBC(addr); return 4; };
-	m_OpSize[0xF9] = function (addr) { me.ExecuteSBC(addr); return 4; };
-	m_OpSize[0xE1] = function (addr) { me.ExecuteSBC(addr); return 6; };
-	m_OpSize[0xE1] = function (addr) { me.ExecuteSBC(addr); return 5; };
-
-	// SEC
-	m_OpSize[0x38] = function (addr) { me.ExecuteSEC(addr); return 2; };
-
-	// SED
-	m_OpSize[0xF8] = function (addr) { me.ExecuteSED(addr); return 2; };
-
-	// SEI
-	m_OpSize[0x78] = function (addr) { me.ExecuteSEI(addr); return 2; };
-
-	// STA
-	m_OpSize[0x85] = function (addr) { me.ExecuteSTA(addr); return 3; };
-	m_OpSize[0x95] = function (addr) { me.ExecuteSTA(addr); return 4; };
-	m_OpSize[0x8D] = function (addr) { me.ExecuteSTA(addr); return 4; };
-	m_OpSize[0x9D] = function (addr) { me.ExecuteSTA(addr); return 5; };
-	m_OpSize[0x99] = function (addr) { me.ExecuteSTA(addr); return 5; };
-	m_OpSize[0x81] = function (addr) { me.ExecuteSTA(addr); return 6; };
-	m_OpSize[0x91] = function (addr) { me.ExecuteSTA(addr); return 6; };
-
-	// STX
-	m_OpSize[0x86] = function (addr) { me.ExecuteSTX(addr); return 3; };
-	m_OpSize[0x96] = function (addr) { me.ExecuteSTX(addr); return 4; };
-	m_OpSize[0x8E] = function (addr) { me.ExecuteSTX(addr); return 4; };
-
-	// STY
-	m_OpSize[0x84] = function (addr) { me.ExecuteSTY(addr); return 3; };
-	m_OpSize[0x94] = function (addr) { me.ExecuteSTY(addr); return 4; };
-	m_OpSize[0x8C] = function (addr) { me.ExecuteSTY(addr); return 4; };
-
-	// TAX
-	m_OpSize[0xAA] = function (addr) { me.ExecuteTAX(addr); return 2; };
-
-	// TAY
-	m_OpSize[0xA8] = function (addr) { me.ExecuteTAY(addr); return 2; };
-
-	// TSX
-	m_OpSize[0xBA] = function (addr) { me.ExecuteTSX(addr); return 2; };
-
-	// TXA
-	m_OpSize[0x8A] = function (addr) { me.ExecuteTXA(addr); return 2; };
-
-	// TXS
-	m_OpSize[0x9a] = function (addr) { me.ExecuteTXS(addr); return 2; };
-
-	// TYA
-	m_OpSize[0x98] = function (addr) { me.ExecuteTYA(addr); return 2; };
-
-
-
-
-
-
-
-
-
-
-
-
-
+	var m_ROM;
+	var pc 			= 0;
+	var sp 			= 255;
+	var a 			= 0;
+	var x 			= 0;
+	var y 			= 0;
+	var p 			= 32;
+// ----------------------------------------------------------------	
 	// ADC
 	m_OpTable[0x69] = function (addr) { me.ExecuteADC(addr); return 2; };
 	m_OpTable[0x65] = function (addr) { me.ExecuteADC(addr); return 3; };
@@ -994,6 +721,7 @@ function CPU (nes) {
 		if(m_OpTable[opcode] == null || m_OpTable[opcode] === undefined) {
 			console.error("Unknown Instruction: " + opcode + " " + addr + " ---- Stopping Execution");
 			m_Running = false;
+			process.exit();
 		}
 
 		return cycleCount = m_OpTable[opcode](addr);
@@ -1001,20 +729,52 @@ function CPU (nes) {
 
 	this.Init = function () {
 		m_Memory.Init();
-		pc = 0;
-		sp = 0;
-		a = 0;
-		x = 0;
-		y = 0;
-		p = 0;
+		
 	}
 
 	this.Reset = function () {
 
 	}
 
+	this.Execute = function () {		
+		var instr = m_ROM.Get(pc);
+		if(instr == undefined || instr === null) {
+			return 0;
+		}
+		console.log("Executing: 0x" + instr.toString(16));
+		var cycles = this.ExecuteInstruction(instr, 0x00);
+		pc += 2;
+		return cycles;
+	}
+
+	this.ExecuteLoop = function () {
+		var delay = 1000 / hz;	// Get the delay between cycles based on Hz of simulation
+		var cycles = me.Execute();
+		if (cycles === 0) {
+			return;
+		}
+		setTimeout(me.ExecuteLoop, delay * cycles);
+	}
+
 	this.Run = function () {
 		m_Running = true;
+		m_ROM = m_Console.ROM();
+		console.log("Number of 16kB ROM Banks: " + m_ROM.Get(4));
+		console.log("Number of 8kB ROM Banks: " + m_ROM.Get(5));
+		console.log("Number of 8kB RAM Banks: " + m_ROM.Get(8));
+		console.log(m_ROM.Get(9) & 0x1 == 1 ? "Format: PAL" : "Format: NTSC");
+		var lowerMapper = m_ROM.Get(6) >> 4;
+		var upperMapper = m_ROM.Get(7) >> 4;
+		var mapperType = lowerMapper + upperMapper;
+		if (mapperType === 0) {
+			console.log("No Mapper Required by ROM");
+		}
+
+		var pc1 = m_Memory.Get(0xFFFC);	// Get RESET Vector
+		var pc2 = m_Memory.Get(0xFFFD);
+		pc = pc2 + pc1;
+
+		this.ExecuteLoop();
 	}
 
 	this.IsRunning = function () {

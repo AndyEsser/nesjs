@@ -4,6 +4,7 @@ var IOMapper 		= require('./IOMapper');
 
 function NES () {
 // ----------------------------------------------------------------	
+	var me 			= this;
 	var cpu 		= new CPU(this);
 	var rom 		= new ROM(this);
 	var io 			= new IOMapper(this);
@@ -33,17 +34,23 @@ function NES () {
 	this.Init = function () {
 		io.Init();
 		rom.Init();
-		cpu.Init();
-
-		cpu.Run();
+		cpu.Init();		
 	}
 
 	this.Reset = function () {
 
 	}
 
-	this.Load = function (file) {
-		rom.Load(file);
+	this.Load = function (file, fn) {
+		rom.Load(file, fn);
+	}
+
+	this.Run = function () {
+		cpu.Run();
+	}
+
+	this.ROM = function () {
+		return getROM();
 	}
 // ----------------------------------------------------------------	
 };

@@ -11,7 +11,20 @@ function ROM (nes) {
 // ----------------------------------------------------------------
 
 // ----------------------------------------------------------------
-	this.Get = function (addr) {
+	this.Get = function (addr, len) {
+		// if(len == undefined || len === null) {
+		// 	len = 1;
+		// }
+		
+		// var tmp;
+		// for(var idx = addr; idx < (addr + len); ++idx) {
+		// 	//console.log(tmp)
+		// 	console.log(idx);
+		// 	tmp += m_ROM[idx];
+		// }
+
+		
+		// return tmp;
 		return m_ROM[addr];
 	}
 
@@ -23,13 +36,11 @@ function ROM (nes) {
 
 	}
 
-	this.Load = function (file) {
+	this.Load = function (file, fn) {
 		m_Loaded = false;
-		
-		fs.open(file, 'r', function(status, fd) {
-			if(status) {
-				console.error(status.message);
-				return;
+		fs.open(file, 'r', function(err, fd) {
+			if(err) {
+				fn(true, null);
 			}
 
 			var buffer = new Buffer(64 * 1024);
@@ -38,7 +49,10 @@ function ROM (nes) {
 
 				for(var idx = 0; idx < num; ++idx) {
 					m_ROM[idx] = buffer[idx];
-				}			
+				}
+
+				m_Loaded = true;
+				fn(false, null);
 			});
 		});
 	}

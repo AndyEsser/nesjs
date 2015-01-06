@@ -13,7 +13,30 @@ function RAM (nes) {
 	}
 // ----------------------------------------------------------------
 	this.Get = function (addr) {
-		return m_Memory[addr];
+		if(addr <= 0x10000 && addr > 0xC000) {
+			// Upper Bank of Cartridge ROM
+			var rom = nes.ROM();
+			var relativeAddress = 0x10000 - addr;
+			return rom.Get(16 + relativeAddress);
+		} else if(addr <= 0xC000 && addr > 0x8000) {
+			// Lower Bank of Cartridge ROM
+			var rom = nes.ROM();
+			var relativeAddress = 0xC000 - addr;
+			return rom.Get(16 + relativeAddress);
+		} else if(addr <= 0x8000 && addr > 0x6000) {
+			// Cartridge RAM
+			var rom = nes.ROM();
+			var relativeAddress = 0x8000 - addr;
+			return rom.Get(16 + relativeAddress);
+		} else if(addr <= 0x6000 && addr > 0x5000) {
+			// Expansion Modules
+			return 0x0;
+		} else if(addr <= 0x5000 && addr > 0x2000) {
+			// Input/Output
+			return 0x0;
+		} else if(addr <= 0x2000 && addr > 0x0000) {
+			return m_Memory[addr];
+		}		
 	}
 
 	this.Set = function (addr, value) {
