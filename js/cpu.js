@@ -8,6 +8,7 @@ function CPU (nes) {
 	var m_Memory	= new RAM(nes);
 	var m_Running 	= false;
 	var m_OpSize	= new Array();
+	var m_OpName	= new Array();
 	var m_OpTable 	= new Array();
 	var m_ROM;
 	var pc 			= 0;
@@ -17,6 +18,546 @@ function CPU (nes) {
 	var y 			= 0;
 	var p 			= 32;
 // ----------------------------------------------------------------	
+	// ADC
+	m_OpSize[0x69] 	= 2;
+	m_OpSize[0x65]	= 2;
+	m_OpSize[0x75]	= 2;
+	m_OpSize[0x6D]	= 3;
+	m_OpSize[0x7D]	= 3;
+	m_OpSize[0x79]	= 3;
+	m_OpSize[0x61]	= 2;
+	m_OpSize[0x71] 	= 2;
+
+	// AND
+	m_OpSize[0x29] 	= 2;
+	m_OpSize[0x25] 	= 2;
+	m_OpSize[0x35] 	= 2;
+	m_OpSize[0x2D] 	= 3;
+	m_OpSize[0x3D] 	= 3;
+	m_OpSize[0x39] 	= 3;
+	m_OpSize[0x21] 	= 2;
+	m_OpSize[0x31] 	= 2;
+
+	// ASL
+	m_OpSize[0x0A] 	= 1;
+	m_OpSize[0x06] 	= 2;
+	m_OpSize[0x16] 	= 2;
+	m_OpSize[0x0E] 	= 3;
+	m_OpSize[0x1E] 	= 3;
+
+	// BCC
+	m_OpSize[0x90] 	= 2;
+
+	// BCS
+	m_OpSize[0xB0] 	= 2;
+
+	// BEQ
+	m_OpSize[0xF0] 	= 2;
+
+	// BIT
+	m_OpSize[0x24] 	= 2;
+	m_OpSize[0x2C] 	= 3;
+
+	// BMI
+	m_OpSize[0x30] 	= 2;
+
+	// BNE
+	m_OpSize[0xD0] 	= 2;
+
+	// BPL
+	m_OpSize[0x10] 	= 2;
+
+	// BRK
+	m_OpSize[0x00] 	= 1;
+
+	// BVC
+	m_OpSize[0x50] 	= 2;
+
+	// BVS
+	m_OpSize[0x70] 	= 2;
+
+	// CLC
+	m_OpSize[0x18] 	= 1;
+
+	// CLD
+	m_OpSize[0xD8] 	= 1;
+
+	// CLI
+	m_OpSize[0x58] 	= 1;
+
+	// CLV
+	m_OpSize[0xB8] 	= 1;
+
+	// CMP
+	m_OpSize[0xC9] 	= 2;
+	m_OpSize[0xC5] 	= 2;
+	m_OpSize[0xD5] 	= 2;
+	m_OpSize[0xCD] 	= 3;
+	m_OpSize[0xDD] 	= 3;
+	m_OpSize[0xD9] 	= 3;
+	m_OpSize[0xC1] 	= 2;
+	m_OpSize[0xD1] 	= 2;
+
+	// CPX
+	m_OpSize[0xE0] 	= 2;
+	m_OpSize[0xE4] 	= 2;
+	m_OpSize[0xEC] 	= 3;
+
+	// CPY
+	m_OpSize[0xC0] 	= 2;
+	m_OpSize[0xC4] 	= 2;
+	m_OpSize[0xCC] 	= 3;
+
+	// DEC
+	m_OpSize[0xC6] 	= 2;
+	m_OpSize[0xD6] 	= 2;
+	m_OpSize[0xCE] 	= 3;
+	m_OpSize[0xDE] 	= 3;
+
+	// DEX
+	m_OpSize[0xCA] 	= 1;
+
+	// DEY
+	m_OpSize[0x88] 	= 1;
+
+	// EOR
+	m_OpSize[0x49] 	= 2;
+	m_OpSize[0x45] 	= 2;
+	m_OpSize[0x55] 	= 2;
+	m_OpSize[0x4D] 	= 3;
+	m_OpSize[0x5D] 	= 3;
+	m_OpSize[0x59] 	= 3;
+	m_OpSize[0x41] 	= 2;
+	m_OpSize[0x51] 	= 2;
+
+	// INC
+	m_OpSize[0xE6] 	= 2;
+	m_OpSize[0xF6] 	= 2;
+	m_OpSize[0xEE] 	= 3;
+	m_OpSize[0xFE] 	= 3;
+
+	// INX
+	m_OpSize[0xE8] 	= 1;
+
+	// INY
+	m_OpSize[0xC8] 	= 1;
+
+	// JMP
+	m_OpSize[0x4C] 	= 3;
+	m_OpSize[0x6C] 	= 3;
+
+	// JSR
+	m_OpSize[0x20] 	= 3;
+
+	// LDA
+	m_OpSize[0xA9] 	= 2;
+	m_OpSize[0xA5] 	= 2;
+	m_OpSize[0xB5] 	= 2;
+	m_OpSize[0xAD] 	= 3;
+	m_OpSize[0xBD] 	= 3;
+	m_OpSize[0xB9] 	= 3;
+	m_OpSize[0xA1] 	= 2;
+	m_OpSize[0xB1] 	= 2;
+
+	// LDX
+	m_OpSize[0xA2] 	= 2;
+	m_OpSize[0xA6] 	= 2;
+	m_OpSize[0xB6] 	= 2;
+	m_OpSize[0xAE] 	= 3;
+	m_OpSize[0xBE] 	= 3;
+
+	// LDY
+	m_OpSize[0xA0] 	= 2;
+	m_OpSize[0xA4] 	= 2;
+	m_OpSize[0xB4] 	= 2;
+	m_OpSize[0xAC] 	= 3;
+	m_OpSize[0xBC] 	= 3;	
+
+	// LSR
+	m_OpSize[0x4A] 	= 1;
+	m_OpSize[0x46] 	= 2;
+	m_OpSize[0x56] 	= 2;
+	m_OpSize[0x4E] 	= 3;
+	m_OpSize[0x5E] 	= 3;
+
+	// NOP
+	m_OpSize[0xEA] 	= 1;
+
+	// ORA
+	m_OpSize[0x09] 	= 2;
+	m_OpSize[0x05] 	= 2;
+	m_OpSize[0x15] 	= 2;
+	m_OpSize[0x0D] 	= 3;
+	m_OpSize[0x1D] 	= 3;
+	m_OpSize[0x19] 	= 3;
+	m_OpSize[0x01] 	= 2;
+	m_OpSize[0x11] 	= 2;
+
+	// PHA
+	m_OpSize[0x48] 	= 1;
+
+	// PHP
+	m_OpSize[0x08] 	= 1;
+
+	// PLA
+	m_OpSize[0x68] 	= 1;
+
+	// PLP
+	m_OpSize[0x28] 	= 1;
+
+	// ROL
+	m_OpSize[0x2A] 	= 2;
+	m_OpSize[0x26] 	= 5;
+	m_OpSize[0x36] 	= 6;
+	m_OpSize[0x2E] 	= 6;
+	m_OpSize[0x3E] 	= 7;
+
+	// ROL
+	m_OpSize[0x6A] 	= 2;
+	m_OpSize[0x66] 	= 5;
+	m_OpSize[0x76] 	= 6;
+	m_OpSize[0x6E] 	= 6;
+	m_OpSize[0x7E] 	= 7;
+
+	// RTI
+	m_OpSize[0x40] 	= 1;
+
+	// RTS
+	m_OpSize[0x60] 	= 1;
+
+	// SBC
+	m_OpSize[0xE9] 	= 2;
+	m_OpSize[0xE5] 	= 2;
+	m_OpSize[0xF5] 	= 2;
+	m_OpSize[0xED] 	= 3;
+	m_OpSize[0xFD] 	= 3;
+	m_OpSize[0xF9] 	= 3;
+	m_OpSize[0xE1] 	= 2;
+	m_OpSize[0xF1] 	= 2;
+
+	// SEC
+	m_OpSize[0x38] 	= 1;
+
+	// SED
+	m_OpSize[0xF8] 	= 1;
+
+	// SEI
+	m_OpSize[0x78] 	= 1;
+
+	// STA
+	m_OpSize[0x85] 	= 2;
+	m_OpSize[0x95] 	= 2;
+	m_OpSize[0x8D] 	= 3;
+	m_OpSize[0x9D] 	= 3;
+	m_OpSize[0x99] 	= 3;
+	m_OpSize[0x81] 	= 2;
+	m_OpSize[0x91] 	= 2;
+
+	// STX
+	m_OpSize[0x86] 	= 2;
+	m_OpSize[0x96] 	= 2;
+	m_OpSize[0x8E] 	= 3;
+
+	// STY
+	m_OpSize[0x84] 	= 2;
+	m_OpSize[0x94] 	= 2;
+	m_OpSize[0x8C] 	= 2;
+
+	// TAX
+	m_OpSize[0xAA] 	= 1;
+
+	// TAY
+	m_OpSize[0xA8] 	= 1;
+
+	// TSX
+	m_OpSize[0x38] 	= 1;
+
+	// TXA
+	m_OpSize[0x8A] 	= 1;
+
+	// TXS
+	m_OpSize[0x9A] 	= 1;
+
+	// TYA
+	m_OpSize[0x98] 	= 1;
+
+
+
+
+
+
+
+// ADC
+	m_OpName[0x69] 	= "ADC";
+	m_OpName[0x65]	= "ADC";
+	m_OpName[0x75]	= "ADC";
+	m_OpName[0x6D]	= "ADC";
+	m_OpName[0x7D]	= "ADC";
+	m_OpName[0x79]	= "ADC";
+	m_OpName[0x61]	= "ADC";
+	m_OpName[0x71] 	= "ADC";
+
+	// AND
+	m_OpName[0x29] 	= "AND";
+	m_OpName[0x25] 	= "AND";
+	m_OpName[0x35] 	= "AND";
+	m_OpName[0x2D] 	= "AND";
+	m_OpName[0x3D] 	= "AND";
+	m_OpName[0x39] 	= "AND";
+	m_OpName[0x21] 	= "AND";
+	m_OpName[0x31] 	= "AND";
+
+	// ASL
+	m_OpName[0x0A] 	= "ASL";
+	m_OpName[0x06] 	= "ASL";
+	m_OpName[0x16] 	= "ASL";
+	m_OpName[0x0E] 	= "ASL";
+	m_OpName[0x1E] 	= "ASL";
+
+	// BCC
+	m_OpName[0x90] 	= "BCC";
+
+	// BCS
+	m_OpName[0xB0] 	= "BCS";
+
+	// BEQ
+	m_OpName[0xF0] 	= "BEQ";
+
+	// BIT
+	m_OpName[0x24] 	= "BIT";
+	m_OpName[0x2C] 	= "BIT";
+
+	// BMI
+	m_OpName[0x30] 	= "BMI";
+
+	// BNE
+	m_OpName[0xD0] 	= "BNE";
+
+	// BPL
+	m_OpName[0x10] 	= "BPL";
+
+	// BRK
+	m_OpName[0x00] 	= "BRK";
+
+	// BVC
+	m_OpName[0x50] 	= "BVC";
+
+	// BVS
+	m_OpName[0x70] 	= "BVS";
+
+	// CLC
+	m_OpName[0x18] 	= "CLC";
+
+	// CLD
+	m_OpName[0xD8] 	= "CLD";
+
+	// CLI
+	m_OpName[0x58] 	= "CLI";
+
+	// CLV
+	m_OpName[0xB8] 	= "CLV";
+
+	// CMP
+	m_OpName[0xC9] 	= "CMP";
+	m_OpName[0xC5] 	= "CMP";
+	m_OpName[0xD5] 	= "CMP";
+	m_OpName[0xCD] 	= "CMP";
+	m_OpName[0xDD] 	= "CMP";
+	m_OpName[0xD9] 	= "CMP";
+	m_OpName[0xC1] 	= "CMP";
+	m_OpName[0xD1] 	= "CMP";
+
+	// CPX
+	m_OpName[0xE0] 	= "CPX";
+	m_OpName[0xE4] 	= "CPX";
+	m_OpName[0xEC] 	= "CPX";
+
+	// CPY
+	m_OpName[0xC0] 	= "CPY";
+	m_OpName[0xC4] 	= "CPY";
+	m_OpName[0xCC] 	= "CPY";
+
+	// DEC
+	m_OpName[0xC6] 	= "DEC";
+	m_OpName[0xD6] 	= "DEC";
+	m_OpName[0xCE] 	= "DEC";
+	m_OpName[0xDE] 	= "DEC";
+
+	// DEX
+	m_OpName[0xCA] 	= "DEX";
+
+	// DEY
+	m_OpName[0x88] 	= "DEY";
+
+	// EOR
+	m_OpName[0x49] 	= "EOR";
+	m_OpName[0x45] 	= "EOR";
+	m_OpName[0x55] 	= "EOR";
+	m_OpName[0x4D] 	= "EOR";
+	m_OpName[0x5D] 	= "EOR";
+	m_OpName[0x59] 	= "EOR";
+	m_OpName[0x41] 	= "EOR";
+	m_OpName[0x51] 	= "EOR";
+
+	// INC
+	m_OpName[0xE6] 	= "INC";
+	m_OpName[0xF6] 	= "INC";
+	m_OpName[0xEE] 	= "INC";
+	m_OpName[0xFE] 	= "INC";
+
+	// INX
+	m_OpName[0xE8] 	= "INX";
+
+	// INY
+	m_OpName[0xC8] 	= "INY";
+
+	// JMP
+	m_OpName[0x4C] 	= "JMP";
+	m_OpName[0x6C] 	= "JMP";
+
+	// JSR
+	m_OpName[0x20] 	= "JSR";
+
+	// LDA
+	m_OpName[0xA9] 	= "LDA";
+	m_OpName[0xA5] 	= "LDA";
+	m_OpName[0xB5] 	= "LDA";
+	m_OpName[0xAD] 	= "LDA";
+	m_OpName[0xBD] 	= "LDA";
+	m_OpName[0xB9] 	= "LDA";
+	m_OpName[0xA1] 	= "LDA";
+	m_OpName[0xB1] 	= "LDA";
+
+	// LDX
+	m_OpName[0xA2] 	= "LDX";
+	m_OpName[0xA6] 	= "LDX";
+	m_OpName[0xB6] 	= "LDX";
+	m_OpName[0xAE] 	= "LDX";
+	m_OpName[0xBE] 	= "LDX";
+
+	// LDY
+	m_OpName[0xA0] 	= "LDY";
+	m_OpName[0xA4] 	= "LDY";
+	m_OpName[0xB4] 	= "LDY";
+	m_OpName[0xAC] 	= "LDY";
+	m_OpName[0xBC] 	= "LDY";	
+
+	// LSR
+	m_OpName[0x4A] 	= "LSR";
+	m_OpName[0x46] 	= "LSR";
+	m_OpName[0x56] 	= "LSR";
+	m_OpName[0x4E] 	= "LSR";
+	m_OpName[0x5E] 	= "LSR";
+
+	// NOP
+	m_OpName[0xEA] 	= "NOP";
+
+	// ORA
+	m_OpName[0x09] 	= "ORA";
+	m_OpName[0x05] 	= "ORA";
+	m_OpName[0x15] 	= "ORA";
+	m_OpName[0x0D] 	= "ORA";
+	m_OpName[0x1D] 	= "ORA";
+	m_OpName[0x19] 	= "ORA";
+	m_OpName[0x01] 	= "ORA";
+	m_OpName[0x11] 	= "ORA";
+
+	// PHA
+	m_OpName[0x48] 	= "PHA";
+
+	// PHP
+	m_OpName[0x08] 	= "PHP";
+
+	// PLA
+	m_OpName[0x68] 	= "PLA";
+
+	// PLP
+	m_OpName[0x28] 	= "PLP";
+
+	// ROL
+	m_OpName[0x2A] 	= "ROL";
+	m_OpName[0x26] 	= "ROL";
+	m_OpName[0x36] 	= "ROL";
+	m_OpName[0x2E] 	= "ROL";
+	m_OpName[0x3E] 	= "ROL";
+
+	// ROR
+	m_OpName[0x6A] 	= "ROR";
+	m_OpName[0x66] 	= "ROR";
+	m_OpName[0x76] 	= "ROR";
+	m_OpName[0x6E] 	= "ROR";
+	m_OpName[0x7E] 	= "ROR";
+
+	// RTI
+	m_OpName[0x40] 	= "RTI";
+
+	// RTS
+	m_OpName[0x60] 	= "RTS";
+
+	// SBC
+	m_OpName[0xE9] 	= "SBC";
+	m_OpName[0xE5] 	= "SBC";
+	m_OpName[0xF5] 	= "SBC";
+	m_OpName[0xED] 	= "SBC";
+	m_OpName[0xFD] 	= "SBC";
+	m_OpName[0xF9] 	= "SBC";
+	m_OpName[0xE1] 	= "SBC";
+	m_OpName[0xF1] 	= "SBC";
+
+	// SEC
+	m_OpName[0x38] 	= "SEC";
+
+	// SED
+	m_OpName[0xF8] 	= "SED";
+
+	// SEI
+	m_OpName[0x78] 	= "SEI";
+
+	// STA
+	m_OpName[0x85] 	= "STA";
+	m_OpName[0x95] 	= "STA";
+	m_OpName[0x8D] 	= "STA";
+	m_OpName[0x9D] 	= "STA";
+	m_OpName[0x99] 	= "STA";
+	m_OpName[0x81] 	= "STA";
+	m_OpName[0x91] 	= "STA";
+
+	// STX
+	m_OpName[0x86] 	= "STX";
+	m_OpName[0x96] 	= "STX";
+	m_OpName[0x8E] 	= "STX";
+
+	// STY
+	m_OpName[0x84] 	= "STY";
+	m_OpName[0x94] 	= "STY";
+	m_OpName[0x8C] 	= "STY";
+
+	// TAX
+	m_OpName[0xAA] 	= "TAX";
+
+	// TAY
+	m_OpName[0xA8] 	= "TAY";
+
+	// TSX
+	m_OpName[0x38] 	= "TSX";
+
+	// TXA
+	m_OpName[0x8A] 	= "TXA";
+
+	// TXS
+	m_OpName[0x9A] 	= "TXS";
+
+	// TYA
+	m_OpName[0x98] 	= "TYA";
+
+
+
+
+
+
+
+
+
 	// ADC
 	m_OpTable[0x69] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteADC(addr); return 2; };
 	m_OpTable[0x65] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteADC(addr); return 3; };
@@ -398,6 +939,16 @@ function CPU (nes) {
 		return (p & 128) === 1;
 	}
 
+	function convertToHex(value) {
+		if(value === undefined || value == null) {
+			return "0000";
+		}
+		var str = value.toString(16).toUpperCase();
+		var len = str.length;
+		var n = 4;
+		return len >= n ? str : new Array(n - len + 1).join(0) + str;
+	}
+
 // ----------------------------------------------------------------
 
 	this.ExecuteADC = function (addr) {
@@ -718,8 +1269,15 @@ function CPU (nes) {
 	}
 
 	this.ExecuteInstruction = function (opcode, addr) {
+		if(addr === undefined || addr == null) {
+			console.log("Executing: " + pc + " $" + m_OpName[opcode] + " 0x" + opcode.toString(16).toUpperCase());
+		} else {
+			console.log("Executing: " + pc + " $" + m_OpName[opcode] + " 0x" + opcode.toString(16).toUpperCase() + " [0x" + convertToHex(addr.toString(16).toUpperCase()) + "]");	
+		}
+		
 		if(m_OpTable[opcode] == null || m_OpTable[opcode] === undefined) {
-			console.error("Unknown Instruction: " + opcode + " " + addr + " ---- Stopping Execution");
+			console.error("Unknown Instruction: 0x" + opcode.toString(16).toUpperCase() + " " + addr + " ---- Stopping Execution");
+			console.error("PC: " + pc + " X: " + x + " Y: " + y + " SP: " + sp + " P: " + p);
 			m_Running = false;
 			process.exit();
 		}
@@ -740,10 +1298,17 @@ function CPU (nes) {
 		var instr = m_ROM.Get(pc);
 		if(instr == undefined || instr === null) {
 			return 0;
+		}		
+		var cycles;
+		if(m_OpSize[instr] === 1) {
+			cycles = this.ExecuteInstruction(instr);
+		} else if (m_OpSize[instr] === 2) {
+			cycles = this.ExecuteInstruction(instr, m_ROM.Get(pc + 1));
+		} else if (m_OpSize[instr] === 3) {			
+			cycles = this.ExecuteInstruction(instr, m_ROM.Get(pc + 2) + m_ROM.Get(pc + 1));
 		}
-		console.log("Executing: 0x" + instr.toString(16));
-		var cycles = this.ExecuteInstruction(instr, 0x00);
-		pc += 2;
+
+		pc += m_OpSize[instr];
 		return cycles;
 	}
 
