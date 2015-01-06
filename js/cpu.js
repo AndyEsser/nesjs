@@ -18,62 +18,62 @@ function CPU (nes) {
 	var p 			= 32;
 // ----------------------------------------------------------------	
 	// ADC
-	m_OpTable[0x69] = function (addr) { me.ExecuteADC(addr); return 2; };
-	m_OpTable[0x65] = function (addr) { me.ExecuteADC(addr); return 3; };
-	m_OpTable[0x75] = function (addr) { me.ExecuteADC(addr); return 4; };
-	m_OpTable[0x6D] = function (addr) { me.ExecuteADC(addr); return 4; };
-	m_OpTable[0x7D] = function (addr) { me.ExecuteADC(addr); return 4; };
-	m_OpTable[0x79] = function (addr) { me.ExecuteADC(addr); return 4; };
-	m_OpTable[0x61] = function (addr) { me.ExecuteADC(addr); return 6; };
-	m_OpTable[0x71] = function (addr) { me.ExecuteADC(addr); return 5; };
+	m_OpTable[0x69] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteADC(addr); return 2; };
+	m_OpTable[0x65] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteADC(addr); return 3; };
+	m_OpTable[0x75] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteADC(addr); return 4; };
+	m_OpTable[0x6D] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteADC(addr); return 4; };
+	m_OpTable[0x7D] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteADC(addr); return 4; };
+	m_OpTable[0x79] = function (addr) { m_Memory.SetAddressModeAbsoluteY(y); 		me.ExecuteADC(addr); return 4; };
+	m_OpTable[0x61] = function (addr) { m_Memory.SetAddressModeIndexedIndirect(x); 	me.ExecuteADC(addr); return 6; };
+	m_OpTable[0x71] = function (addr) { m_Memory.SetAddressModeIndirectIndexed(y); 	me.ExecuteADC(addr); return 5; };
 
 	// AND
-	m_OpTable[0x29] = function (addr) { me.ExecuteAND(addr); return 2; };
-	m_OpTable[0x25] = function (addr) { me.ExecuteAND(addr); return 3; };
-	m_OpTable[0x35] = function (addr) { me.ExecuteAND(addr); return 4; };
-	m_OpTable[0x2D] = function (addr) { me.ExecuteAND(addr); return 4; };
-	m_OpTable[0x3D] = function (addr) { me.ExecuteAND(addr); return 4; };
-	m_OpTable[0x39] = function (addr) { me.ExecuteAND(addr); return 4; };
-	m_OpTable[0x21] = function (addr) { me.ExecuteAND(addr); return 6; };
-	m_OpTable[0x31] = function (addr) { me.ExecuteAND(addr); return 5; };
+	m_OpTable[0x29] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteAND(addr); return 2; };
+	m_OpTable[0x25] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteAND(addr); return 3; };
+	m_OpTable[0x35] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteAND(addr); return 4; };
+	m_OpTable[0x2D] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteAND(addr); return 4; };
+	m_OpTable[0x3D] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteAND(addr); return 4; };
+	m_OpTable[0x39] = function (addr) { m_Memory.SetAddressModeAbsoluteY(y); 		me.ExecuteAND(addr); return 4; };
+	m_OpTable[0x21] = function (addr) { m_Memory.SetAddressModeIndexedIndirect(x); 	me.ExecuteAND(addr); return 6; };
+	m_OpTable[0x31] = function (addr) { m_Memory.SetAddressModeIndirectIndexed(y); 	me.ExecuteAND(addr); return 5; };
 
 	// ASL
-	m_OpTable[0x0A] = function (addr) { me.ExecuteASL(addr); return 2; };
-	m_OpTable[0x06] = function (addr) { me.ExecuteASL(addr); return 5; };
-	m_OpTable[0x16] = function (addr) { me.ExecuteASL(addr); return 6; };
-	m_OpTable[0x0E] = function (addr) { me.ExecuteASL(addr); return 6; };
-	m_OpTable[0x1E] = function (addr) { me.ExecuteASL(addr); return 7; };
+	m_OpTable[0x0A] = function (addr) { m_Memory.SetAddressModeAccumulator(a); 		me.ExecuteASL(addr); return 2; };
+	m_OpTable[0x06] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteASL(addr); return 5; };
+	m_OpTable[0x16] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteASL(addr); return 6; };
+	m_OpTable[0x0E] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteASL(addr); return 6; };
+	m_OpTable[0x1E] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteASL(addr); return 7; };
 	
 	// BCC
-	m_OpTable[0x90] = function (addr) { me.ExecuteBCC(addr); return 2; };
+	m_OpTable[0x90] = function (addr) { m_Memory.SetAddressModeRelative(); 			me.ExecuteBCC(addr); return 2; };
 
 	// BCS
-	m_OpTable[0xB0] = function (addr) { me.ExecuteBCS(addr); return 2; };
+	m_OpTable[0xB0] = function (addr) { m_Memory.SetAddressModeRelative(); 			me.ExecuteBCS(addr); return 2; };
 
 	// BEQ
-	m_OpTable[0xF0] = function (addr) { me.ExecuteBEQ(addr); return 2; };
+	m_OpTable[0xF0] = function (addr) { m_Memory.SetAddressModeRelative(); 			me.ExecuteBEQ(addr); return 2; };
 
 	// BIT
-	m_OpTable[0x24] = function (addr) { me.ExecuteBIT(addr); return 3; };
-	m_OpTable[0x2C] = function (addr) { me.ExecuteBIT(addr); return 4; };
+	m_OpTable[0x24] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteBIT(addr); return 3; };
+	m_OpTable[0x2C] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteBIT(addr); return 4; };
 
 	// BMI
-	m_OpTable[0x30] = function (addr) { me.ExecuteBMI(addr); return 2; };
+	m_OpTable[0x30] = function (addr) { m_Memory.SetAddressModeRelative(); 			me.ExecuteBMI(addr); return 2; };
 
 	// BNE
-	m_OpTable[0xD0] = function (addr) { me.ExecuteBNE(addr); return 2; };
+	m_OpTable[0xD0] = function (addr) { m_Memory.SetAddressModeRelative(); 			me.ExecuteBNE(addr); return 2; };
 
 	// BPL
-	m_OpTable[0x10] = function (addr) { me.ExecuteBPL(addr); return 2; };
+	m_OpTable[0x10] = function (addr) { m_Memory.SetAddressModeRelative(); 			me.ExecuteBPL(addr); return 2; };
 
 	// BRK
 	m_OpTable[0x00] = function (addr) { me.ExecuteBRK(addr); return 7; };
 
 	// BVC
-	m_OpTable[0x50] = function (addr) { me.ExecuteBVC(addr); return 2; };
+	m_OpTable[0x50] = function (addr) { m_Memory.SetAddressModeRelative(); 			me.ExecuteBVC(addr); return 2; };
 
 	// BVS
-	m_OpTable[0x70] = function (addr) { me.ExecuteBVS(addr); return 2; };
+	m_OpTable[0x70] = function (addr) { m_Memory.SetAddressModeRelative(); 			me.ExecuteBVS(addr); return 2; };
 
 	// CLC
 	m_OpTable[0x18] = function (addr) { me.ExecuteCLC(addr); return 2; };
@@ -88,30 +88,30 @@ function CPU (nes) {
 	m_OpTable[0xB8] = function (addr) { me.ExecuteCLV(addr); return 2; };
 
 	// CMP
-	m_OpTable[0xC9] = function (addr) { me.ExecuteCMP(addr); return 2; };
-	m_OpTable[0xC5] = function (addr) { me.ExecuteCMP(addr); return 3; };
-	m_OpTable[0xD5] = function (addr) { me.ExecuteCMP(addr); return 4; };
-	m_OpTable[0xCD] = function (addr) { me.ExecuteCMP(addr); return 4; };
-	m_OpTable[0xDD] = function (addr) { me.ExecuteCMP(addr); return 4; };
-	m_OpTable[0xD9] = function (addr) { me.ExecuteCMP(addr); return 4; };
-	m_OpTable[0xC1] = function (addr) { me.ExecuteCMP(addr); return 6; };
-	m_OpTable[0xD1] = function (addr) { me.ExecuteCMP(addr); return 5; };
+	m_OpTable[0xC9] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteCMP(addr); return 2; };
+	m_OpTable[0xC5] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteCMP(addr); return 3; };
+	m_OpTable[0xD5] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteCMP(addr); return 4; };
+	m_OpTable[0xCD] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteCMP(addr); return 4; };
+	m_OpTable[0xDD] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteCMP(addr); return 4; };
+	m_OpTable[0xD9] = function (addr) { m_Memory.SetAddressModeAbsoluteY(y); 		me.ExecuteCMP(addr); return 4; };
+	m_OpTable[0xC1] = function (addr) { m_Memory.SetAddressModeIndexedIndirect(x); 	me.ExecuteCMP(addr); return 6; };
+	m_OpTable[0xD1] = function (addr) { m_Memory.SetAddressModeIndirectIndexed(y); 	me.ExecuteCMP(addr); return 5; };
 
 	// CPX
-	m_OpTable[0xE0] = function (addr) { me.ExecuteCPX(addr); return 2; };
-	m_OpTable[0xE4] = function (addr) { me.ExecuteCPX(addr); return 3; };
-	m_OpTable[0xEC] = function (addr) { me.ExecuteCPX(addr); return 4; };
+	m_OpTable[0xE0] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteCPX(addr); return 2; };
+	m_OpTable[0xE4] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteCPX(addr); return 3; };
+	m_OpTable[0xEC] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteCPX(addr); return 4; };
 
 	// CPY
-	m_OpTable[0xC0] = function (addr) { me.ExecuteCPY(addr); return 2; };
-	m_OpTable[0xC4] = function (addr) { me.ExecuteCPY(addr); return 3; };
-	m_OpTable[0xCC] = function (addr) { me.ExecuteCPY(addr); return 4; };
+	m_OpTable[0xC0] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteCPY(addr); return 2; };
+	m_OpTable[0xC4] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteCPY(addr); return 3; };
+	m_OpTable[0xCC] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteCPY(addr); return 4; };
 
 	// DEC
-	m_OpTable[0xC6] = function (addr) { me.ExecuteDEC(addr); return 5; };
-	m_OpTable[0xD6] = function (addr) { me.ExecuteDEC(addr); return 6; };
-	m_OpTable[0xCE] = function (addr) { me.ExecuteDEC(addr); return 6; };
-	m_OpTable[0xDE] = function (addr) { me.ExecuteDEC(addr); return 7; };
+	m_OpTable[0xC6] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteDEC(addr); return 5; };
+	m_OpTable[0xD6] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteDEC(addr); return 6; };
+	m_OpTable[0xCE] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteDEC(addr); return 6; };
+	m_OpTable[0xDE] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteDEC(addr); return 7; };
 
 	// DEX
 	m_OpTable[0xCA] = function (addr) { me.ExecuteDEX(addr); return 2; };
@@ -120,20 +120,20 @@ function CPU (nes) {
 	m_OpTable[0x88] = function (addr) { me.ExecuteDEY(addr); return 2; };
 
 	// EOR
-	m_OpTable[0x49] = function (addr) { me.ExecuteEOR(addr); return 2; };
-	m_OpTable[0x45] = function (addr) { me.ExecuteEOR(addr); return 3; };
-	m_OpTable[0x55] = function (addr) { me.ExecuteEOR(addr); return 4; };
-	m_OpTable[0x4D] = function (addr) { me.ExecuteEOR(addr); return 4; };
-	m_OpTable[0x5D] = function (addr) { me.ExecuteEOR(addr); return 4; };
-	m_OpTable[0x59] = function (addr) { me.ExecuteEOR(addr); return 4; };
-	m_OpTable[0x41] = function (addr) { me.ExecuteEOR(addr); return 6; };
-	m_OpTable[0x51] = function (addr) { me.ExecuteEOR(addr); return 5; };
+	m_OpTable[0x49] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteEOR(addr); return 2; };
+	m_OpTable[0x45] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteEOR(addr); return 3; };
+	m_OpTable[0x55] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteEOR(addr); return 4; };
+	m_OpTable[0x4D] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteEOR(addr); return 4; };
+	m_OpTable[0x5D] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteEOR(addr); return 4; };
+	m_OpTable[0x59] = function (addr) { m_Memory.SetAddressModeAbsoluteY(y); 		me.ExecuteEOR(addr); return 4; };
+	m_OpTable[0x41] = function (addr) { m_Memory.SetAddressModeIndexedIndirect(x); 	me.ExecuteEOR(addr); return 6; };
+	m_OpTable[0x51] = function (addr) { m_Memory.SetAddressModeIndirectIndexed(y); 	me.ExecuteEOR(addr); return 5; };
 
 	// INC
-	m_OpTable[0xE6] = function (addr) { me.ExecuteINC(addr); return 5; };
-	m_OpTable[0xF6] = function (addr) { me.ExecuteINC(addr); return 6; };
-	m_OpTable[0xEE] = function (addr) { me.ExecuteINC(addr); return 6; };
-	m_OpTable[0xFE] = function (addr) { me.ExecuteINC(addr); return 7; };
+	m_OpTable[0xE6] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteINC(addr); return 5; };
+	m_OpTable[0xF6] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteINC(addr); return 6; };
+	m_OpTable[0xEE] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteINC(addr); return 6; };
+	m_OpTable[0xFE] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteINC(addr); return 7; };
 
 	// INX
 	m_OpTable[0xE8] = function (addr) { me.ExecuteINX(addr); return 2; };
@@ -142,55 +142,55 @@ function CPU (nes) {
 	m_OpTable[0xC8] = function (addr) { me.ExecuteINY(addr); return 2; };
 
 	// JMP
-	m_OpTable[0x4C] = function (addr) { me.ExecuteJMP(addr); return 3; };
-	m_OpTable[0x6C] = function (addr) { me.ExecuteJMP(addr); return 5; };
+	m_OpTable[0x4C] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteJMP(addr); return 3; };
+	m_OpTable[0x6C] = function (addr) { m_Memory.SetAddressModeIndirect(); 			me.ExecuteJMP(addr); return 5; };
 
 	// JSR
-	m_OpTable[0x20] = function (addr) { me.ExecuteJSR(addr); return 6; };
+	m_OpTable[0x20] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteJSR(addr); return 6; };
 
 	// LDA
-	m_OpTable[0xA9] = function (addr) { me.ExecuteLDA(addr); return 2; };
-	m_OpTable[0xA5] = function (addr) { me.ExecuteLDA(addr); return 3; };
-	m_OpTable[0xB5] = function (addr) { me.ExecuteLDA(addr); return 4; };
-	m_OpTable[0xAD] = function (addr) { me.ExecuteLDA(addr); return 4; };
-	m_OpTable[0xBD] = function (addr) { me.ExecuteLDA(addr); return 4; };
-	m_OpTable[0xB9] = function (addr) { me.ExecuteLDA(addr); return 4; };
-	m_OpTable[0xA1] = function (addr) { me.ExecuteLDA(addr); return 6; };
-	m_OpTable[0xB1] = function (addr) { me.ExecuteLDA(addr); return 5; };
+	m_OpTable[0xA9] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteLDA(addr); return 2; };
+	m_OpTable[0xA5] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteLDA(addr); return 3; };
+	m_OpTable[0xB5] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteLDA(addr); return 4; };
+	m_OpTable[0xAD] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteLDA(addr); return 4; };
+	m_OpTable[0xBD] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteLDA(addr); return 4; };
+	m_OpTable[0xB9] = function (addr) { m_Memory.SetAddressModeAbsoluteY(y); 		me.ExecuteLDA(addr); return 4; };
+	m_OpTable[0xA1] = function (addr) { m_Memory.SetAddressModeIndexedIndirect(x); 	me.ExecuteLDA(addr); return 6; };
+	m_OpTable[0xB1] = function (addr) { m_Memory.SetAddressModeIndirectIndexed(y); 	me.ExecuteLDA(addr); return 5; };
 
 	// LDX
-	m_OpTable[0xA2] = function (addr) { me.ExecuteLDX(addr); return 2; };
-	m_OpTable[0xA6] = function (addr) { me.ExecuteLDX(addr); return 3; };
-	m_OpTable[0xB6] = function (addr) { me.ExecuteLDX(addr); return 4; };
-	m_OpTable[0xAE] = function (addr) { me.ExecuteLDX(addr); return 4; };
-	m_OpTable[0xBE] = function (addr) { me.ExecuteLDX(addr); return 4; };
+	m_OpTable[0xA2] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteLDX(addr); return 2; };
+	m_OpTable[0xA6] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteLDX(addr); return 3; };
+	m_OpTable[0xB6] = function (addr) { m_Memory.SetAddressModeZeroPageY(y); 		me.ExecuteLDX(addr); return 4; };
+	m_OpTable[0xAE] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteLDX(addr); return 4; };
+	m_OpTable[0xBE] = function (addr) { m_Memory.SetAddressModeAbsoluteY(y); 		me.ExecuteLDX(addr); return 4; };
 
 	// LDY
-	m_OpTable[0xA0] = function (addr) { me.ExecuteLDY(addr); return 2; };
-	m_OpTable[0xA4] = function (addr) { me.ExecuteLDY(addr); return 3; };
-	m_OpTable[0xB4] = function (addr) { me.ExecuteLDY(addr); return 4; };
-	m_OpTable[0xAC] = function (addr) { me.ExecuteLDY(addr); return 4; };
-	m_OpTable[0xBC] = function (addr) { me.ExecuteLDY(addr); return 4; };
+	m_OpTable[0xA0] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteLDY(addr); return 2; };
+	m_OpTable[0xA4] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteLDY(addr); return 3; };
+	m_OpTable[0xB4] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteLDY(addr); return 4; };
+	m_OpTable[0xAC] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteLDY(addr); return 4; };
+	m_OpTable[0xBC] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteLDY(addr); return 4; };
 
 	// LSR
-	m_OpTable[0x4A] = function (addr) { me.ExecuteLSR(addr); return 2; };
-	m_OpTable[0x46] = function (addr) { me.ExecuteLSR(addr); return 5; };
-	m_OpTable[0x56] = function (addr) { me.ExecuteLSR(addr); return 6; };
-	m_OpTable[0x4E] = function (addr) { me.ExecuteLSR(addr); return 6; };
-	m_OpTable[0x5E] = function (addr) { me.ExecuteLSR(addr); return 7; };
+	m_OpTable[0x4A] = function (addr) { m_Memory.SetAddressModeAccumulator(a); 		me.ExecuteLSR(addr); return 2; };
+	m_OpTable[0x46] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteLSR(addr); return 5; };
+	m_OpTable[0x56] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteLSR(addr); return 6; };
+	m_OpTable[0x4E] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteLSR(addr); return 6; };
+	m_OpTable[0x5E] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteLSR(addr); return 7; };
 
 	// NOP
 	m_OpTable[0xEA] = function (addr) { me.ExecuteNOP(addr); return 2; };
 
 	// ORA
-	m_OpTable[0x09] = function (addr) { me.ExecuteORA(addr); return 2; };
-	m_OpTable[0x05] = function (addr) { me.ExecuteORA(addr); return 3; };
-	m_OpTable[0x15] = function (addr) { me.ExecuteORA(addr); return 4; };
-	m_OpTable[0x0D] = function (addr) { me.ExecuteORA(addr); return 4; };
-	m_OpTable[0x1D] = function (addr) { me.ExecuteORA(addr); return 4; };
-	m_OpTable[0x19] = function (addr) { me.ExecuteORA(addr); return 4; };
-	m_OpTable[0x01] = function (addr) { me.ExecuteORA(addr); return 6; };
-	m_OpTable[0x11] = function (addr) { me.ExecuteORA(addr); return 5; };
+	m_OpTable[0x09] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteORA(addr); return 2; };
+	m_OpTable[0x05] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteORA(addr); return 3; };
+	m_OpTable[0x15] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteORA(addr); return 4; };
+	m_OpTable[0x0D] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteORA(addr); return 4; };
+	m_OpTable[0x1D] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteORA(addr); return 4; };
+	m_OpTable[0x19] = function (addr) { m_Memory.SetAddressModeAbsoluteY(y); 		me.ExecuteORA(addr); return 4; };
+	m_OpTable[0x01] = function (addr) { m_Memory.SetAddressModeIndexedIndirect(x); 	me.ExecuteORA(addr); return 6; };
+	m_OpTable[0x11] = function (addr) { m_Memory.SetAddressModeIndirectIndexed(y); 	me.ExecuteORA(addr); return 5; };
 
 	// PHA
 	m_OpTable[0x48] = function (addr) { me.ExecutePHA(addr); return 3; };
@@ -205,18 +205,18 @@ function CPU (nes) {
 	m_OpTable[0x28] = function (addr) { me.ExecutePLP(addr); return 4; };
 
 	// ROL
-	m_OpTable[0x2A] = function (addr) { me.ExecuteROL(addr); return 2; };
-	m_OpTable[0x26] = function (addr) { me.ExecuteROL(addr); return 5; };
-	m_OpTable[0x36] = function (addr) { me.ExecuteROL(addr); return 6; };
-	m_OpTable[0x2E] = function (addr) { me.ExecuteROL(addr); return 6; };
-	m_OpTable[0x3E] = function (addr) { me.ExecuteROL(addr); return 7; };
+	m_OpTable[0x2A] = function (addr) { m_Memory.SetAddressModeAccumulator(a); 		me.ExecuteROL(addr); return 2; };
+	m_OpTable[0x26] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteROL(addr); return 5; };
+	m_OpTable[0x36] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteROL(addr); return 6; };
+	m_OpTable[0x2E] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteROL(addr); return 6; };
+	m_OpTable[0x3E] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteROL(addr); return 7; };
 
 	// ROR
-	m_OpTable[0x6A] = function (addr) { me.ExecuteROR(addr); return 2; };
-	m_OpTable[0x66] = function (addr) { me.ExecuteROR(addr); return 5; };
-	m_OpTable[0x76] = function (addr) { me.ExecuteROR(addr); return 6; };
-	m_OpTable[0x6E] = function (addr) { me.ExecuteROR(addr); return 6; };
-	m_OpTable[0x7E] = function (addr) { me.ExecuteROR(addr); return 7; };
+	m_OpTable[0x6A] = function (addr) { m_Memory.SetAddressModeAccumulator(a); 		me.ExecuteROR(addr); return 2; };
+	m_OpTable[0x66] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteROR(addr); return 5; };
+	m_OpTable[0x76] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteROR(addr); return 6; };
+	m_OpTable[0x6E] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteROR(addr); return 6; };
+	m_OpTable[0x7E] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteROR(addr); return 7; };
 
 	// RTI
 	m_OpTable[0x40] = function (addr) { me.ExecuteRTI(addr); return 6; };
@@ -225,14 +225,14 @@ function CPU (nes) {
 	m_OpTable[0x60] = function (addr) { me.ExecutePTS(addr); return 6; };
 
 	// SBC
-	m_OpTable[0xE9] = function (addr) { me.ExecuteSBC(addr); return 2; };
-	m_OpTable[0xE5] = function (addr) { me.ExecuteSBC(addr); return 3; };
-	m_OpTable[0xF5] = function (addr) { me.ExecuteSBC(addr); return 4; };
-	m_OpTable[0xED] = function (addr) { me.ExecuteSBC(addr); return 4; };
-	m_OpTable[0xFD] = function (addr) { me.ExecuteSBC(addr); return 4; };
-	m_OpTable[0xF9] = function (addr) { me.ExecuteSBC(addr); return 4; };
-	m_OpTable[0xE1] = function (addr) { me.ExecuteSBC(addr); return 6; };
-	m_OpTable[0xE1] = function (addr) { me.ExecuteSBC(addr); return 5; };
+	m_OpTable[0xE9] = function (addr) { m_Memory.SetAddressModeImmediate(); 		me.ExecuteSBC(addr); return 2; };
+	m_OpTable[0xE5] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteSBC(addr); return 3; };
+	m_OpTable[0xF5] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteSBC(addr); return 4; };
+	m_OpTable[0xED] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteSBC(addr); return 4; };
+	m_OpTable[0xFD] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteSBC(addr); return 4; };
+	m_OpTable[0xF9] = function (addr) { m_Memory.SetAddressModeAbsoluteY(y); 		me.ExecuteSBC(addr); return 4; };
+	m_OpTable[0xE1] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteSBC(addr); return 6; };
+	m_OpTable[0xE1] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteSBC(addr); return 5; };
 
 	// SEC
 	m_OpTable[0x38] = function (addr) { me.ExecuteSEC(addr); return 2; };
@@ -244,23 +244,23 @@ function CPU (nes) {
 	m_OpTable[0x78] = function (addr) { me.ExecuteSEI(addr); return 2; };
 
 	// STA
-	m_OpTable[0x85] = function (addr) { me.ExecuteSTA(addr); return 3; };
-	m_OpTable[0x95] = function (addr) { me.ExecuteSTA(addr); return 4; };
-	m_OpTable[0x8D] = function (addr) { me.ExecuteSTA(addr); return 4; };
-	m_OpTable[0x9D] = function (addr) { me.ExecuteSTA(addr); return 5; };
-	m_OpTable[0x99] = function (addr) { me.ExecuteSTA(addr); return 5; };
-	m_OpTable[0x81] = function (addr) { me.ExecuteSTA(addr); return 6; };
-	m_OpTable[0x91] = function (addr) { me.ExecuteSTA(addr); return 6; };
+	m_OpTable[0x85] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteSTA(addr); return 3; };
+	m_OpTable[0x95] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteSTA(addr); return 4; };
+	m_OpTable[0x8D] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteSTA(addr); return 4; };
+	m_OpTable[0x9D] = function (addr) { m_Memory.SetAddressModeAbsoluteX(x); 		me.ExecuteSTA(addr); return 5; };
+	m_OpTable[0x99] = function (addr) { m_Memory.SetAddressModeAbsoluteY(y); 		me.ExecuteSTA(addr); return 5; };
+	m_OpTable[0x81] = function (addr) { m_Memory.SetAddressModeIndexedIndirect(x); 	me.ExecuteSTA(addr); return 6; };
+	m_OpTable[0x91] = function (addr) { m_Memory.SetAddressModeIndirectIndexed(y); 	me.ExecuteSTA(addr); return 6; };
 
 	// STX
-	m_OpTable[0x86] = function (addr) { me.ExecuteSTX(addr); return 3; };
-	m_OpTable[0x96] = function (addr) { me.ExecuteSTX(addr); return 4; };
-	m_OpTable[0x8E] = function (addr) { me.ExecuteSTX(addr); return 4; };
+	m_OpTable[0x86] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteSTX(addr); return 3; };
+	m_OpTable[0x96] = function (addr) { m_Memory.SetAddressModeZeroPageY(y); 		me.ExecuteSTX(addr); return 4; };
+	m_OpTable[0x8E] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteSTX(addr); return 4; };
 
 	// STY
-	m_OpTable[0x84] = function (addr) { me.ExecuteSTY(addr); return 3; };
-	m_OpTable[0x94] = function (addr) { me.ExecuteSTY(addr); return 4; };
-	m_OpTable[0x8C] = function (addr) { me.ExecuteSTY(addr); return 4; };
+	m_OpTable[0x84] = function (addr) { m_Memory.SetAddressModeZeroPage(); 			me.ExecuteSTY(addr); return 3; };
+	m_OpTable[0x94] = function (addr) { m_Memory.SetAddressModeZeroPageX(x); 		me.ExecuteSTY(addr); return 4; };
+	m_OpTable[0x8C] = function (addr) { m_Memory.SetAddressModeAbsolute(); 			me.ExecuteSTY(addr); return 4; };
 
 	// TAX
 	m_OpTable[0xAA] = function (addr) { me.ExecuteTAX(addr); return 2; };
