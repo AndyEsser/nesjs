@@ -1,5 +1,5 @@
 var NES 		= require('./console');
-var nes
+var nes;
 
 function convertToBytes(value) {
 	var str = value.toString(2).toUpperCase();
@@ -11,7 +11,7 @@ function convertToBytes(value) {
 function init() {	
 	nes = new NES();
 	nes.Init();
-	nes.Load("test.nes");
+	nes.Load("rom/01-basics.nes");
 };
 
 init();
