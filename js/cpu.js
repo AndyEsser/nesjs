@@ -1131,8 +1131,8 @@ function CPU (nes) {
 	}
 
 	this.ExecuteJSR = function (addr) {
-		stackPush(pc -1);
-		pc = m_Memory.Get(addr);
+		stackPush(pc - 1);
+		pc = addr; //_Memory.Get(addr);
 	}
 
 	this.ExecuteLDA = function (addr) {
@@ -1270,9 +1270,9 @@ function CPU (nes) {
 
 	this.ExecuteInstruction = function (opcode, addr) {
 		if(addr === undefined || addr == null) {
-			console.log("Executing: " + pc + " $" + m_OpName[opcode] + " 0x" + opcode.toString(16).toUpperCase());
+			console.log(pc + " $" + m_OpName[opcode] + " 0x" + opcode.toString(16).toUpperCase());
 		} else {
-			console.log("Executing: " + pc + " $" + m_OpName[opcode] + " 0x" + opcode.toString(16).toUpperCase() + " [0x" + convertToHex(addr.toString(16).toUpperCase()) + "]");	
+			console.log(pc + " $" + m_OpName[opcode] + " 0x" + opcode.toString(16).toUpperCase() + " [0x" + convertToHex(addr.toString(16).toUpperCase()) + "]");	
 		}
 		
 		if(m_OpTable[opcode] == null || m_OpTable[opcode] === undefined) {
@@ -1306,6 +1306,8 @@ function CPU (nes) {
 			cycles = this.ExecuteInstruction(instr, m_ROM.Get(pc + 1));
 		} else if (m_OpSize[instr] === 3) {			
 			cycles = this.ExecuteInstruction(instr, m_ROM.Get(pc + 2) + m_ROM.Get(pc + 1));
+		} else {
+			console.log("Unknown Op Size: " + m_OpSize[instr] + " for OpCode: " + instr);
 		}
 
 		pc += m_OpSize[instr];

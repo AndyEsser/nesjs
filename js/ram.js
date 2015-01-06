@@ -83,7 +83,7 @@ function RAM (nes) {
 
 			case 10:
 				// Indexed Indirect
-				return addr + m_Idx;
+				return addr + (m_Idx % 255);
 			break;
 
 			case 11:

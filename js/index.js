@@ -10,9 +10,9 @@ function convertToBytes(value) {
 
 function init() {	
 	nes = new NES();
-	nes.Init();
-	//nes.Load("rom/01-basics.nes", function (err, data) {
-	nes.Load("test.nes", function (err, data) {		
+	nes.Init();	
+	//nes.Load("rom/03-immediate.nes", function (err, data) {	
+	nes.Load("test.nes", function (err, data) {
 		if(!err) {
 			nes.Run();
 		}
