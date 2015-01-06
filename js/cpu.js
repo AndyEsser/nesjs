@@ -743,8 +743,10 @@ function CPU (nes) {
 	}
 
 	this.ExecuteBRK = function () {
+		stackPush(pc);
+		stackPush(p);		
+		pc = m_Memory.Get(0xFFFE);
 		setBreakCommand();
-		// TODO: Push values onto stack
 	}
 
 	this.ExecuteBVC = function (value) {
@@ -851,7 +853,7 @@ function CPU (nes) {
 	}
 
 	this.ExecuteJSR = function (addr) {
-		// TODO: Push PC-1 onto stack
+		stackPush(pc -1);
 		pc = m_Memory.Get(addr);
 	}
 
@@ -875,10 +877,11 @@ function CPU (nes) {
 
 	this.ExecuteLSR = function () {
 		// TODO:
+		console.log("$LSR: TODO");
 	}
 
 	this.ExecuteNOP = function () {
-		// TODO:
+		
 	}
 
 	this.ExecuteORA = function (addr) {
@@ -889,39 +892,43 @@ function CPU (nes) {
 	}
 
 	this.ExecutePHA = function () {
-		// TODO: Push copy of Accumulator onto Stack
+		stackPush(a);
 	}
 
 	this.ExecutePHP = function () {
-		// TODO: Push status flags onto Stack
+		stackPush(p);
 	}
 
 	this.ExecutePLA = function () {
-		// TODO: Pull value from stack and put into A
+		a = stackPop();
 	}
 
 	this.ExecutePLP = function () {
-		// TODO: Pull value from stack and put into Status
+		p = stackPop();
 	}
 
 	this.ExecuteROL = function () {
 		// TODO:
+		console.log("$ROL: TODO");
 	}
 
 	this.ExecuteROR = function () {
 		// TODO:
+		console.log("$ROR: TODO");
 	}
 
 	this.ExecuteRTI = function () {
-		// TODO:
+		p = stackPop();
+		pc = stackPop();
 	}
 
 	this.ExecuteRTS = function () {
-		// TODO:
+		pc = stackPop();
 	}
 
 	this.ExecuteSBC = function () {
 		// TODO:
+		console.log("$SBC: TODO");
 	}
 
 	this.ExecuteSEC = function () {
